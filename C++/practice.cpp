@@ -1,17 +1,21 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-vector<vector<int>> v;
-vector<vector<int>> v2(10, vector<int>(10,0));
-vector<int> v3[10];
+vector<int> v;
 
 int main(){
-    
-    for(int i = 0; i < 10; i++){
-        vector<int> temp;
-        v.push_back(temp);
+    int n = 100;
+    int b = 2;
+
+    while(n > 1){
+        v.push_back(n%b);
+        n /= b;
     }
-
+    if(n == 1) v.push_back(1);
+    reverse(v.begin(), v.end());
+    for(int a : v){
+        if(a >= 10) cout << char(a + 55);
+        else cout << a;
+    }
     return 0;
-
 }
