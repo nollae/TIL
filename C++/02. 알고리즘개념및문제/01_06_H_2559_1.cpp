@@ -23,7 +23,6 @@ using namespace std;
 typedef long long ll;
 int n, k, temp, psum[100001], ret = -10000004;
 
-
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);

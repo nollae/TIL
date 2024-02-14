@@ -25,6 +25,12 @@
         "random": "cpp",
         "algorithm": "cpp",
         "atomic": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "memory": "cpp",
+        "utility": "cpp",
+        "ios": "cpp",
+        "iosfwd": "cpp"
     }
 }
