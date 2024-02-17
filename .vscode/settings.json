@@ -31,6 +31,8 @@
         "memory": "cpp",
         "utility": "cpp",
         "ios": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "tuple": "cpp",
+        "complex": "cpp"
     }
 }

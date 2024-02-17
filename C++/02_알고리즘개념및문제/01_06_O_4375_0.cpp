@@ -2,6 +2,7 @@
 using namespace std;
 
 /**
+ * (못풀엇음 ㅠㅠ)
  * 모듈러 연산 활용하기
 */
 
