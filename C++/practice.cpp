@@ -1,27 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-/**
- * 모듈러 연산 활용하기
-*/
+const int V = 10;
+vector<int> a[V];
+int visited[V];
 
-typedef long long ll;
-int n;
+void go(int from){
+    visited[from] =  1;
+    cout << from << "\n";
+
+    for(int it : a[from]){
+        if(visited[it]) continue;
+        go(it);
+    }
+}
 
 int main(){
-    
-    while(scanf("%d", &n) != EOF){
-        ll cnt = 1, ret = 1;
-        while(true){
-            if(cnt % n == 0){
-                printf("%lld\n", ret);
-                break;
-            }else{
-                cnt = (cnt * 10) + 1;
-                cnt %= n;
-                ret++;
-            }
-        }
-    }
+    a[1].push_back(2);
+    a[2].push_back(1);
 
+    a[1].push_back(3);
+    a[3].push_back(1);
+
+    a[3].push_back(4);
+    a[4].push_back(3);
+
+    for(int i = 0; i < V; i++){
+        if(a[i].size() && visited[i] == 0) go(i);
+    }
 }
