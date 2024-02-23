@@ -1,60 +1,33 @@
 #include <bits/stdc++.h>
-using namespace std; 
-vector<int> adj[1004]; 
-int visited[1004];
+using namespace std;
 
-void postOrder(int here){  
-    if(visited[here] == 0){
-        if(adj[here].size() == 1) postOrder(adj[here][0]);
-        if(adj[here].size() == 2){
-            postOrder(adj[here][0]);
-            postOrder(adj[here][1]);
-        }
-        visited[here] = 1;
-        cout << here << " ";
-    }
-} 
+const int n = 10;
+vector<int> a[n];
+int visited[n];
 
-void preOrder(int here){ 
-    if(visited[here] == 0){
-        visited[here] = 1;
-        cout << here << " ";
-        if(adj[here].size() == 1) preOrder(adj[here][0]);
-        if(adj[here].size() == 2){
-            preOrder(adj[here][0]);
-            preOrder(adj[here][1]);
-        }
-    }
-}  
+void go(int from){
+    visited[from] = 1;
+    cout << from << " ";
 
-void inOrder(int here){    
-    if(visited[here] == 0){
-        if(adj[here].size() == 1){
-            inOrder(adj[here][0]);
-            visited[here] = 1;
-            cout << here << " ";
-        }else if(adj[here].size() == 2){
-            inOrder(adj[here][0]);
-            visited[here] = 1;
-            cout << here << " ";
-            inOrder(adj[here][1]);
-        }else{
-            visited[here] = 1;
-            cout << here << " ";
-        }
+    for(int i : a[from]){
+        if(visited[i]) continue;
+        go(i);
     }
-} 
+}
+
 int main(){
-	adj[1].push_back(2);
-	adj[1].push_back(3);
-	adj[2].push_back(4);
-	adj[2].push_back(5); 
-	int root = 1;
-    cout << "\n 트리순회 : postOrder \n";
-    postOrder(root); memset(visited, 0, sizeof(visited));
-    cout << "\n 트리순회 : preOrder \n"; 
-    preOrder(root); memset(visited, 0, sizeof(visited)); 
-    cout << "\n 트리순회 : inOrder \n"; 
-    inOrder(root); 
-    return 0;
-} 
+    a[1].push_back(2);
+    a[1].push_back(3);
+
+    a[2].push_back(1);
+
+    a[3].push_back(1);
+    a[3].push_back(4);
+
+    a[4].push_back(3);
+
+    for(int i = 0; i < n; i++){
+        if(a[i].size() && visited[i] == 0) go(i);
+    }
+
+}
