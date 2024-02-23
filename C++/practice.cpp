@@ -1,33 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int n = 10;
-vector<int> a[n];
-int visited[n];
+const int n = 3;
+const int dy[] = {-1, 0, 1, 0};
+const int dx[] = {0, 1, 0, -1};
+int a[n][n], visited[n][n];
 
-void go(int from){
-    visited[from] = 1;
-    cout << from << " ";
-
-    for(int i : a[from]){
-        if(visited[i]) continue;
-        go(i);
+void go(int y, int x){
+    visited[y][x] = 1;
+    cout << y << " : " << x << "\n";
+    for(int i = 0; i < 4; i++){
+        int ny = y + dy[i];
+        int xy = x + dx[i];
+        if(ny < 0 || ny >= n || xy < 0 || xy>= n) continue;
+        if(visited[ny][xy]) continue;
+        if(!a[ny][xy]) continue;
+        go(ny, xy);
     }
 }
 
 int main(){
-    a[1].push_back(2);
-    a[1].push_back(3);
-
-    a[2].push_back(1);
-
-    a[3].push_back(1);
-    a[3].push_back(4);
-
-    a[4].push_back(3);
-
     for(int i = 0; i < n; i++){
-        if(a[i].size() && visited[i] == 0) go(i);
+        for(int j = 0; j < n; j++){
+            cin >> a[i][j];
+        }
     }
 
+    go(0, 0);
 }
