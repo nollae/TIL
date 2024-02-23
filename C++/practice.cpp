@@ -1,44 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> a[100];
-int visited[100];
-int nodeList[] = {10, 12, 14, 16, 18, 20, 22, 24};
+int n, m, sy, sx, fy, fx;
+const int dy[] = {-1, 0, 1, 0};
+const int dx[] = {0, 1, 0, -1};
+int a[104][104], visited[104][104];
 
-void bfs(int here){
-    queue<int> q;
-    visited[here] = 1;
-    q.push(here);
-
+void bfs(int y, int x){
+    queue<pair<int,int>> q;
+    visited[y][x] = 1;
+    q.push({y, x});
+    cout << y << " : " << x << "\n";
     while(q.size()){
-        int here = q.front();
-        q.pop();
-        for(int there : a[here]){
-            if(visited[there]) continue;
-            visited[there] = visited[here] + 1;
-            q.push(there);
+        tie(y, x) = q.front(); q.pop();
+        for(int i = 0; i < 4; i++){
+            int ny = y + dy[i];
+            int nx = x + dx[i];
+            if(ny < 0 || nx < 0 || ny >= n || nx >= m) continue;
+            if(a[ny][nx] && !visited[ny][nx]){
+                visited[ny][nx] = visited[y][x] + 1;
+                q.push({ny, nx});
+            }
         }
     }
-    
+
 }
 
 int main(){
-    a[10].push_back(12);
-    a[10].push_back(14);
-    a[10].push_back(16);
 
-    a[12].push_back(18);
-    a[12].push_back(20);
+    cin >> n >> m;
+    cin >> sy >> sx;
+    cin >> fy >> fx;
 
-    a[20].push_back(22);
-    a[20].push_back(24);
-
-    bfs(10);
-
-    for(int i : nodeList){
-        cout << i << " : " << visited[i] << "\n";
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            cin >> a[i][j];
+        }
     }
 
-    cout << "최단 거리 : " << visited[24] - 1;
+    bfs(sy, sx);
+
+    cout << visited[fy][fx];
 
 }
