@@ -1,6 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/**
+ * 시간초과
+*/
+
 int n, a[1000004];
 
 int go(int here){
@@ -27,3 +31,4 @@ int main(){
     }
     
 }
+
