@@ -1,44 +1,52 @@
 #include <bits/stdc++.h>
-using namespace  std;
+using namespace std;
 
-const int n = 3;
-int a[3][3] = {
-{10, 20, 21}, 
-{70, 90, 12},
-{80, 110, 120} 
-};
-int visited[3][3];
-const int dy[] = {-1, 0, 1, 0};
-const int dx[] = {0, 1, 0, -1};
-vector<int> v; 
+int n, m, a[54][54], result = 987654321;
+vector<vector<int>> chickenList;
+vector<pair<int, int>> home, chicken;
 
-void print(){
-    for(int i : v) cout << i << " ";
-	cout << '\n';
-}
-
-void go(int y, int x){
-    if(y == n - 1 && x == n - 1){
-        print();
+void combi(int start, vector<int> v){
+    if(v.size() == m){
+        chickenList.push_back(v);
         return;
     }
-    for(int i = 0; i < 4; i++){
-        int ny = y + dy[i];
-        int nx = x + dx[i];
-        if(ny < 0 || nx < 0 || ny >= 3 || ny >= 3) continue;
-        if(visited[ny][nx]) continue;
-        visited[ny][nx] = 1;
-        v.push_back(a[ny][nx]);
-        go(ny, nx);
-        visited[ny][nx] = 0;
+
+    for(int i = start + 1; i < chicken.size(); i++){
+        v.push_back(i);
+        combi(i, v);
         v.pop_back();
     }
+
+    return;
 }
 
 int main(){
+    cin >> n >> m;
 
-    visited[0][0] = 1;
-    v.push_back(a[0][0]);
-    go(0, 0);
-    return 0;
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            cin >> a[i][j];
+            if(a[i][j] == 1) home.push_back({i,j});
+            if(a[i][j] == 2) chicken.push_back({i,j});
+        }
+    }
+
+    vector<int> v;
+    combi(-1, v);
+
+    for(vector<int> chk : chickenList){
+        int ret = 0;
+        for(pair<int, int> h : home){
+            int _min = 987654321;
+            for(int ch : chk){
+                int cal = abs(h.first - chicken[ch].first) + abs(h.second - chicken[ch].second);
+                _min = min(_min, cal);
+            }
+            ret += _min;
+        }
+
+        result = min(result, ret);
+    }
+
+    cout << result << "\n";
 }
