@@ -1,29 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, a[1000004];
+int n, temp, ret;
+vector<int> v;
+const int mod = 11;
 
-int go(int here){
-    int ret = -1;
-    for(int i = here; i < n; i++){
-        if(here == (n-1)) break;
-        if(a[here] < a[i]){ ret = a[i]; break; }
+void go(int idx, int sum){
+    if(ret == 10) return;
+    if(idx == n){
+        ret = max(ret, sum % mod);
+        return;
     }
-    return ret;
+
+    go(idx + 1, sum + v[idx]);
+    go(idx + 1, sum);
 }
 
 int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-
     cin >> n;
 
     for(int i = 0; i < n; i++){
-        cin >> a[i];
+        cin >> temp;
+        v.push_back(temp);
     }
 
-    for(int i = 0; i < n; i++){
-        cout << go(i) << " ";
-    }
-    
+    go(0, 0);
+
+    cout << ret << "\n";
+    cout << ret << "\n";
+
+    return 0;
 }
