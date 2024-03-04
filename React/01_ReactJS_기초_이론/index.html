@@ -7,28 +7,73 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
-        // simple way : JSX
         const root = document.getElementById("root");
-        function Title() {
-            return (
-                <h3 id="title" onMouseEnter={() => console.log("mouse enter")}>
-                    Hello i'm a h3
-                </h3>
+
+        function MinutesToHours() {
+            const [amount, setAmount] = React.useState(0);
+            const [flipped, setFlipped] = React.useState(false);
+            
+            const onChange = (event) => {
+                setAmount(event.target.value);
+            }
+            const reset = () => setAmount(0);
+            const onFlip = () => {
+                reset();
+                setFlipped((current) => !current);
+            }
+
+            return(
+                <div>
+                    <div>
+                        <label htmlFor="mins">minutes</label>
+                        <input value={flipped ? amount * 60 : amount} id="mins" type="number" placeholder="minutes"
+                        onChange={onChange}
+                        disabled={flipped}
+                        />
+                    </div>    
+                    <div>
+                        <label htmlFor="hours">hours</label>
+                        <input value={flipped ? amount : amount / 60} id="hours" type="number" placeholder="hours"
+                        onChange={onChange}
+                        disabled={!flipped}
+                        />
+                    </div>   
+                    <button onClick={reset}>reset</button> 
+                    <button onClick={onFlip}>flip</button> 
+                </div>
+
             );
         }
-        const Button = () => (
-            <button style={{
-                backgroundColor: "tomato"}}
-                onClick={() => console.log("i'm clicked")}
-                >Click me</button>
-            );
 
-        const Container = () => (
-            <div>
-                <button>hello</button>
-                <Title /> 
-                <Button />
-            </div>);
-        ReactDOM.render(<Container />, root);
+        function KmtoMiles() {
+            return(
+                <h3>Km 2 M</h3>
+                
+            );
+        }
+
+        function App() {
+            const [index, setIndex] = React.useState("xx");
+            const onSelect = (event) => {
+                setIndex(event.target.value);
+            }
+            return(
+                <div>
+                    <h1>super converter</h1>
+                    <select value={index} onChange={onSelect}>
+                        <option value="xx">select your units</option>
+                        <option value="0">Minuites & Hours</option>
+                        <option value="1">Km & M</option>
+                    </select>
+
+                    {index === "xx" ? "select your units" : null}
+                    {index === "0" ? <MinutesToHours /> : null}
+                    {index === "1" ? <KmtoMiles /> : null}
+                </div>
+
+            );
+        }
+
+        ReactDOM.render(<App />, root);
     </script>
 </html>
