@@ -5,70 +5,35 @@
     </body>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
         const root = document.getElementById("root");
-
-        function MinutesToHours() {
-            const [amount, setAmount] = React.useState(0);
-            const [flipped, setFlipped] = React.useState(false);
-            
-            const onChange = (event) => {
-                setAmount(event.target.value);
-            }
-            const reset = () => setAmount(0);
-            const onFlip = () => {
-                reset();
-                setFlipped((current) => !current);
-            }
-
-            return(
-                <div>
-                    <div>
-                        <label htmlFor="mins">minutes</label>
-                        <input value={flipped ? amount * 60 : amount} id="mins" type="number" placeholder="minutes"
-                        onChange={onChange}
-                        disabled={flipped}
-                        />
-                    </div>    
-                    <div>
-                        <label htmlFor="hours">hours</label>
-                        <input value={flipped ? amount : amount / 60} id="hours" type="number" placeholder="hours"
-                        onChange={onChange}
-                        disabled={!flipped}
-                        />
-                    </div>   
-                    <button onClick={reset}>reset</button> 
-                    <button onClick={onFlip}>flip</button> 
-                </div>
-
-            );
+        function Btn({ text, fontSize = 16}){ 
+            return <button 
+                style={{
+                    backgroundColor: "tomato",
+                    color:"white",
+                    padding:"10px 20px",
+                    border:0,
+                    borderRadius:10,
+                    fontSize
+            }}>
+                {text} 
+            </button>
         }
 
-        function KmtoMiles() {
-            return(
-                <h3>Km 2 M</h3>
-                
-            );
-        }
+        Btn.propTypes = {
+            text: PropTypes.string.isRequired,
+            fontSize: PropTypes.number.isRequired,
+        };
 
         function App() {
-            const [index, setIndex] = React.useState("xx");
-            const onSelect = (event) => {
-                setIndex(event.target.value);
-            }
             return(
                 <div>
-                    <h1>super converter</h1>
-                    <select value={index} onChange={onSelect}>
-                        <option value="xx">select your units</option>
-                        <option value="0">Minuites & Hours</option>
-                        <option value="1">Km & M</option>
-                    </select>
-
-                    {index === "xx" ? "select your units" : null}
-                    {index === "0" ? <MinutesToHours /> : null}
-                    {index === "1" ? <KmtoMiles /> : null}
+                    <Btn text={555} fontSize={"18"}/>
+                    <Btn text={123} />
                 </div>
 
             );
