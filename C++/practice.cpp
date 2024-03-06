@@ -1,44 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, a[3], visited[64][64][64];
-int _a[6][3] = {
-    {9, 3, 1}, {9, 1, 3},
-    {3, 9, 1}, {3, 1, 9},
-    {1, 9, 3}, {1, 3, 9}
-};
+int n, ret = -987654321;
+string s;
+vector<int> num;
+vector<char> oper;
 
-struct A{
-    int a, b, c;
-};
+int oper_(char a, int b, int c){
+    if(a == '+') return b + c;
+    if(a == '-') return b - c;
+    if(a == '*') return b * c;
+}
 
-queue<A> q;
-
-int solve(int a, int b, int c){
-    visited[a][b][c] = 1;
-    q.push({a, b, c});
-    while(q.size()){
-        int a = q.front().a;
-        int b = q.front().b;
-        int c = q.front().c;
-        q.pop();
-        if(visited[0][0][0]) break;
-        for(int i =0; i < 6; i++){
-            int na = max(0, a - _a[i][0]);
-            int nb = max(0, b - _a[i][1]);
-            int nc = max(0, c - _a[i][2]);
-            if(visited[na][nb][nc]) continue;
-            visited[na][nb][nc] = visited[a][b][c] + 1;  
-            q.push({na, nb, nc}); 
-        }
+void go(int here, int _num){
+    if(here == num.size() - 1){
+        ret = max(ret, _num);
+        return;
     }
-    return visited[0][0][0] - 1;
+
+    go(here+1, oper_(oper[here], _num, num[here + 1]));
+
+    if(here + 2 <= num.size() - 1){
+        int temp = oper_(oper[here + 1], num[here + 1], num[here + 2]);
+        go(here + 2, oper_(oper[here], _num, temp));
+    }
+
+    return;
 }
 
 int main(){
     cin >> n;
+    cin >> s;
+
     for(int i = 0; i < n; i++){
-        cin >> a[i];
+        if(i % 2 == 0) num.push_back(s[i] - '0');
+        else oper.push_back(s[i]);
     }
-    cout << solve(a[0], a[1], a[2]);
+
+    go(0, num[0]);
+
+    cout << ret;
+
 }
