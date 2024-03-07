@@ -1,3 +1,10 @@
+# Practice Movie App
+
+state를 직접적으로 수정하지 않고 modifier function을 이용해서 state 값을 변경해준다! (절대적으로)
+
+아래는 예시코드이다.
+
+```javascript
 import { useState } from "react";
 
 function App() {
@@ -29,3 +36,4 @@ function App() {
 }
 
 export default App;
+```
