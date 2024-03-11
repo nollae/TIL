@@ -1,40 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define prev aaa
+#define next bbb
+
+const int mx = 200004;
 int n, k;
-int visited[100004];
-long long cnt[100004];
+int visited[mx], prev[mx];
+vector<int> v;
 
 int main(){
     cin >> n >> k;
-    if(n == k){
-        puts("0"); puts("1");
-        return 0;
-    }   
 
     visited[n] = 1;
-    cnt[n] = 1;
     queue<int> q;
     q.push(n);
 
     while(q.size()){
-        int now = q.front();
+        int here = q.front();
         q.pop();
-        for(int next : {now-1, now+1, now*2}){
-            if (0 <= next && next <= 100000) { 
-                if(!visited[next]){
-                    q.push(next);
-                    visited[next] = visited[now] + 1;
-                    cnt[next] += cnt[now];
-                }else if(visited[next] == visited[now] + 1){
-                    cnt[next] += cnt[now];
-                }
-            }
+
+        for(int next : {here-1, here+1, here*2}){
+            if(next >= mx || next < 0 || visited[next]) continue;
+            q.push(next);
+            visited[next] = visited[here] + 1;
+            prev[next] = here;
         }
     }
 
-    cout << visited[k] - 1 << '\n';
-    cout << cnt[k] << '\n';
+    for(int i = k; i != n; i = prev[i]){
+        v.push_back(i);
+    }
+    v.push_back(n);
+    reverse(v.begin(), v.end());
 
-    return 0;
+    cout << visited[k] - 1 << "\n";
+
+    for(int i : v){
+        cout << i << " ";
+    }
 }
