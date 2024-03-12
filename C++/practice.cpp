@@ -1,42 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define prev aaa
-#define next bbb
+int n, check[10];
+char a[20];
+vector<string> ret;
 
-const int mx = 200004;
-int n, k;
-int visited[mx], prev[mx];
-vector<int> v;
+bool good(char x, char y, char op){
+    if(x>y && op == '>') return true;
+    if(x<y && op == '<') return true;
+    return false;
+}
 
-int main(){
-    cin >> n >> k;
+void go(int idx, string num){
+    if(idx == n+1){
+        ret.push_back(num);
+        return;
+    }
 
-    visited[n] = 1;
-    queue<int> q;
-    q.push(n);
-
-    while(q.size()){
-        int here = q.front();
-        q.pop();
-
-        for(int next : {here-1, here+1, here*2}){
-            if(next >= mx || next < 0 || visited[next]) continue;
-            q.push(next);
-            visited[next] = visited[here] + 1;
-            prev[next] = here;
+    for(int i = 0; i <=9; i++){
+        if(check[i]) continue;
+        if(idx == 0 || good(num[idx - 1], i + '0', a[idx-1])){
+            check[i] = 1;
+            go(idx + 1, num + to_string(i));
+            check[i] = 0;
         }
     }
+}
 
-    for(int i = k; i != n; i = prev[i]){
-        v.push_back(i);
+int main(){
+    cin >> n;
+
+    for(int i = 0; i < n; i++){
+        cin >> a[i];
     }
-    v.push_back(n);
-    reverse(v.begin(), v.end());
 
-    cout << visited[k] - 1 << "\n";
+    go(0, "");
 
-    for(int i : v){
-        cout << i << " ";
-    }
+    sort(ret.begin(), ret.end());
+
+    cout << ret[ret.size() - 1] << "\n" << ret[0];
+
 }
