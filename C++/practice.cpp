@@ -1,43 +1,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, check[10];
-char a[20];
-vector<string> ret;
+const int dy[] = {-1, 0, 1, 0};
+const int dx[] = {0, 1, 0, -1};
+int n, m, k, visited[10][10];
+char a[10][10];
+string s;
 
-bool good(char x, char y, char op){
-    if(x>y && op == '>') return true;
-    if(x<y && op == '<') return true;
-    return false;
-}
-
-void go(int idx, string num){
-    if(idx == n+1){
-        ret.push_back(num);
-        return;
+int go(int y, int x){
+    if(y == 0 && x == m-1){
+        if(k == visited[y][x])return 1;
+        return 0;
+    }
+    int ret = 0;
+    for(int i = 0; i < 4; i++){
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+        if(ny < 0 || ny >= n || nx < 0 || nx >= m || visited[ny][nx] || a[ny][nx] == 'T') continue;
+        visited[ny][nx] = visited[y][x] + 1;
+        ret += go(ny, nx);
+        visited[ny][nx] = 0;
     }
 
-    for(int i = 0; i <=9; i++){
-        if(check[i]) continue;
-        if(idx == 0 || good(num[idx - 1], i + '0', a[idx-1])){
-            check[i] = 1;
-            go(idx + 1, num + to_string(i));
-            check[i] = 0;
-        }
-    }
+    return ret;
 }
 
 int main(){
-    cin >> n;
-
+    cin >> n >> m >> k;
     for(int i = 0; i < n; i++){
-        cin >> a[i];
+        cin >> s;
+        for(int j = 0; j < m; j++){
+            a[i][j] = s[j];
+        }
     }
 
-    go(0, "");
-
-    sort(ret.begin(), ret.end());
-
-    cout << ret[ret.size() - 1] << "\n" << ret[0];
+    visited[n-1][0] = 1;
+    cout << go(n-1, 0);
 
 }
