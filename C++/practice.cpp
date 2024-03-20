@@ -1,40 +1,19 @@
 #include <bits/stdc++.h>
-using namespace std;
-
-const int dy[] = {-1, 0, 1, 0};
-const int dx[] = {0, 1, 0, -1};
-int n, m, k, visited[10][10];
-char a[10][10];
-string s;
-
-int go(int y, int x){
-    if(y == 0 && x == m-1){
-        if(k == visited[y][x])return 1;
-        return 0;
-    }
-    int ret = 0;
-    for(int i = 0; i < 4; i++){
-        int ny = y + dy[i];
-        int nx = x + dx[i];
-        if(ny < 0 || ny >= n || nx < 0 || nx >= m || visited[ny][nx] || a[ny][nx] == 'T') continue;
-        visited[ny][nx] = visited[y][x] + 1;
-        ret += go(ny, nx);
-        visited[ny][nx] = 0;
-    }
-
-    return ret;
+using namespace std;  
+const int n = 4;
+string a[4] = {"사과", "딸기", "포도", "배"};
+void go(int num){
+	string ret = "";	
+	for(int i = 0; i < 4; i++){
+		if(num & (1 << i)) ret += a[i] + " ";
+	}
+	cout << ret << '\n';
+	return;
 }
+int main() {    
+	for(int i = 1; i < n; i++){
+		go(1 | (1 << i));
+	} 
+    return 0;
+} 
 
-int main(){
-    cin >> n >> m >> k;
-    for(int i = 0; i < n; i++){
-        cin >> s;
-        for(int j = 0; j < m; j++){
-            a[i][j] = s[j];
-        }
-    }
-
-    visited[n-1][0] = 1;
-    cout << go(n-1, 0);
-
-}
