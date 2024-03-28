@@ -122,3 +122,64 @@ export default App;
 
 ## Movie App
 
+```javascript
+import { useEffect, useState } from "react";
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async() => {
+    const json = await (
+      await fetch(
+        `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+      )
+    ).json();
+    setMovies(json.data.movies);
+    setLoading(false);
+  }
+  useEffect(() => {
+    getMovies();
+  }, []);
+  console.log(movies);
+  return (
+    <div> {loading ? 
+      (<h1>Loading .... </h1>) : 
+      (<div>
+        { movies.map(movie => 
+          (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image}/>
+              <h2>{movie.title}</h2>
+              <p>{movie.summary}</p>
+              <ul>
+                {movie.genres.map((g) => (
+                  <li key={g}>{g}</li>
+                ))}
+              </ul>
+            </div>
+          
+          ))
+        }
+        </div>
+      )}
+    </div>);
+}
+
+export default App;
+```
+
+React Router를 실행하기 위해서는 다음을 실행해줘야 한다.
+
+```npm
+npm install react-router-dom
+```
+
+[🔗 react-router-dom](https://reactrouter.com/en/main)
+
+- [❗️최근 버전에서는 `Swtich` 가 아닌 `createBrowserRouter` `RouterProvider`로 변경되었다.](https://reactrouter.com/en/main/upgrading/v5#upgrade-all-switch-elements-to-routes)
+
+- Routes는 Route을 찾는건데, Route는 여기 이 URL을 의미한다.
+
+```npm
+npm i gh-pages
+```
