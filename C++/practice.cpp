@@ -1,46 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int a[4][4], n, m, ret;
+int n, cnt, ret;
+string s;
+stack<int> stk;
 
 int main(){
-    cin >> n >> m;
+    cin >> n >> s;
+    stk.push(-1);
     for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++){
-            cin >> a[i][j];
+        if(s[i] == '(') stk.push(i);
+        if(s[i] == ')'){
+            stk.pop();
+            if(!stk.empty()){
+                ret = max(ret, i - stk.top());
+            }else{
+                stk.push(i);
+            }
         }
     }
-
-    for(int s = 0; s < (1 << (n*m)); s++){
-        int sum = 0;
-        for(int i = 0; i < n; i++){
-            int cur = 0;
-            for(int j = 0; j < m; j++){
-                int k = i * m + j;
-                if((s & (1 << k)) == 0){
-                    cur = cur * 10 + a[i][j];
-                }else{
-                    sum += cur;
-                    cur = 0;
-                }
-            }
-            sum += cur;
-        }
-        for (int j = 0; j < m; j++) {
-            int cur = 0;
-            for (int i = 0; i < n; i++) {
-                int k = i * m + j;
-                if ((s & (1<<k)) != 0) {
-                    cur = cur * 10 + a[i][j];
-                } else {
-                    sum += cur;
-                    cur = 0;
-                }
-            }
-            sum += cur;
-        }
-        ret = max(ret, sum);
-    }
-
-     cout << ret;
+    cout << ret;
 }
