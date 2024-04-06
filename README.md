@@ -2,6 +2,9 @@
 
 * JavaScript
   * [모던_자바스크립트_Deep_Dive](JavaScript/01_모던_자바스크립트_Deep_Dive/00_목차.md)
+* TypeScript
+  * [타입스크립트로 블록체인 만들기](./TypeScript/01_타입스크립트로_블록체인_만들기/00_목차.md)
+
 * React
   * [React JS 기초 이론](React/01_ReactJS_기초_이론/00_목차.md)
 * C++
