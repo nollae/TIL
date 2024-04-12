@@ -35,7 +35,6 @@ npm install --save typescript @types/node @types/react @types/react-dom @types/j
 4. src/index.tsx에서 수정<br>
 --------------------------------------------------------------<br>
 import ReactDOM from "react-dom/client"<br>
-<br>
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);<br>
 5. npm i --save-dev @types/styled-components
 
