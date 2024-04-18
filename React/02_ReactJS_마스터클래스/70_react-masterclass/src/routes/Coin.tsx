@@ -1,11 +1,12 @@
 import { useParams, useLocation, Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
 import Price from './Price';
 import Chart from './Chart';
 import { useQuery } from 'react-query';
 import { fetchCoinInfo, fetchCoinTickers } from '../api';
 import {Helmet} from 'react-helmet-async';
+
+import {ReactComponent as BackBtn} from '../assets/back-button.svg';
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -23,6 +24,7 @@ const Header = styled.header`
 const Title = styled.h1`
     font-size: 48px;
     color:${(props) => props.theme.accentColor};
+    padding: 0 130px;
 `;
 
 const Loader = styled.span`
@@ -147,6 +149,10 @@ interface PriceData {
     };
 }
 
+function onBackBtn(){
+
+}
+
 function Coin() {
 
     const {coinId} = useParams<RouterParams>();
@@ -173,6 +179,12 @@ function Coin() {
                 </title>
             </Helmet>
             <Header>
+                <BackBtn />
+                <Switch>
+                    <Route>
+                        
+                    </Route>
+                </Switch>
                 <Title>
                     {state?.name ? state.name : loading ? "Loading" : infoData?.name}
                 </Title>

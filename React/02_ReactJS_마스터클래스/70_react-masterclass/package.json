@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/react-helmet": "^6.1.11",
     "@types/react-router-dom": "^5.3.3"
   }
