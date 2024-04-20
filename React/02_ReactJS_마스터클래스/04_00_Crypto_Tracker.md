@@ -1283,3 +1283,4 @@ import {Helmet} from 'react-helmet-async';
 1. coin 페이지로 넘어왔을 때 '뒤로가기' 버튼 만들기
 2. price 탭 만들기 
 3. chart 탭 candlestick chart 로 변경하기 
+4. dark / light mode 만들기

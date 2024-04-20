@@ -24,7 +24,8 @@ const Header = styled.header`
 const Title = styled.h1`
     font-size: 48px;
     color:${(props) => props.theme.accentColor};
-    padding: 0 130px;
+    margin-right: auto;
+    /* padding: 0 130px; */
 `;
 
 const Loader = styled.span`
@@ -74,6 +75,12 @@ const Tab = styled.span<{$isActive: boolean}>`
   a {
     display: block;
   }
+`;
+
+const BtnWrapper = styled.div`
+    cursor: pointer;
+    width: 40px;
+    margin-right: auto;
 `;
 
 
@@ -150,7 +157,7 @@ interface PriceData {
 }
 
 function onBackBtn(){
-
+    console.log('hi');
 }
 
 function Coin() {
@@ -179,12 +186,12 @@ function Coin() {
                 </title>
             </Helmet>
             <Header>
-                <BackBtn />
-                <Switch>
-                    <Route>
-                        
-                    </Route>
-                </Switch>
+                <BtnWrapper>
+                    <Link to={``}>
+                        <BackBtn/>
+                    </Link>
+                </BtnWrapper>
+                
                 <Title>
                     {state?.name ? state.name : loading ? "Loading" : infoData?.name}
                 </Title>
@@ -232,7 +239,7 @@ function Coin() {
 
                         <Switch>
                             <Route path={`/:coinId/price`}>
-                                <Price />
+                                <Price coinId={coinId} usdInfo={tickersData?.quotes.USD}/>
                             </Route>
                             <Route path={`/:coinId/chart`}>
                                 <Chart coinId={coinId} />

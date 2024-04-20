@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { fetchCoins } from '../api';
 
+import { ReactComponent as LightMode } from '../assets/light-mode.svg';
+import { ReactComponent as DarkMode } from '../assets/dark-mode.svg';
+
 const Container = styled.div`
     padding: 0px 20px;
     max-width: 480px;
@@ -40,6 +43,8 @@ const Coin = styled.li`
 const Title = styled.h1`
     font-size: 48px;
     color:${(props) => props.theme.accentColor};
+    /* margin-left: auto; */
+    font-weight: bold;
 `;
 
 const Loader = styled.span`
@@ -51,6 +56,13 @@ const Img = styled.img`
     width: 35px;
     height: 35px;
     margin-right: 10px;
+`;
+
+const ThemeWrapper = styled.div`
+    cursor: pointer;
+    width: 32px;
+    margin-left: auto;
+    margin-bottom: -10px;
 `;
 
 interface ICoin {
@@ -69,9 +81,12 @@ function Coins() {
 
     return (
         <Container>
-            <Header>
-                <Title>Coins</Title>
-            </Header>
+            {/* <Header>
+                <Title>Top 100 Cyptos</Title>
+                <ThemeWrapper>
+                    <LightMode />
+                </ThemeWrapper>
+            </Header> */}
             {isLoading ? 
                 <Loader>Loading ... </Loader>
                 : 
