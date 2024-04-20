@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/cyptos_top_100/static/js/main.50132333.js",
-    "index.html": "/cyptos_top_100/index.html",
-    "static/media/back-button.svg": "/cyptos_top_100/static/media/back-button.07c33ca83163226f57af004ea99b74c6.svg",
-    "main.50132333.js.map": "/cyptos_top_100/static/js/main.50132333.js.map"
+    "main.js": "/top_100_crypto/static/js/main.95a9836c.js",
+    "index.html": "/top_100_crypto/index.html",
+    "static/media/back-button.svg": "/top_100_crypto/static/media/back-button.07c33ca83163226f57af004ea99b74c6.svg",
+    "main.95a9836c.js.map": "/top_100_crypto/static/js/main.95a9836c.js.map"
   },
   "entrypoints": [
-    "static/js/main.50132333.js"
+    "static/js/main.95a9836c.js"
   ]
 }
