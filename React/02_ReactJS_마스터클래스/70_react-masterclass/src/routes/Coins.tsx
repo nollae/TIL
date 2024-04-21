@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { fetchCoins } from '../api';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { modeAtom } from '../atoms';
 
-import { ReactComponent as LightMode } from '../assets/light-mode.svg';
-import { ReactComponent as DarkMode } from '../assets/dark-mode.svg';
+import {BsFillSunFill, BsFillMoonFill} from 'react-icons/bs';
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -24,7 +24,7 @@ const CoinList = styled.ul``;
 
 const Coin = styled.li`
     background-color: white;
-    color: ${(props) => props.theme.bgColor};
+    color: ${(props) => props.theme.mainTxtColor};
     border-radius: 15px;
     margin-bottom: 10px;
     a {
@@ -61,8 +61,17 @@ const Img = styled.img`
 const ThemeWrapper = styled.div`
     cursor: pointer;
     width: 32px;
-    margin-left: auto;
-    margin-bottom: -10px;
+    margin-left: 20px;
+`;
+
+const StyledBsFillMoonFill = styled(BsFillMoonFill)`
+  width: 30px;
+  height: 30px;
+`;
+
+const StyledBsFillSunFill = styled(BsFillSunFill)`
+  width: 30px;
+  height: 30px;
 `;
 
 interface ICoin {
@@ -75,18 +84,26 @@ interface ICoin {
     type: string
 }
 
-function Coins() {
+interface ICoinsProps {
+    
+}
+
+function Coins({ }:ICoinsProps) {
 
     const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins)
+    
+    const mode = useRecoilValue(modeAtom);
+    const setModeAtom = useSetRecoilState(modeAtom);
+    const handleModeAtom = () => setModeAtom((current) => !current);
 
     return (
         <Container>
-            {/* <Header>
+            <Header>
                 <Title>Top 100 Cyptos</Title>
-                <ThemeWrapper>
-                    <LightMode />
+                <ThemeWrapper onClick={handleModeAtom}>
+                {mode ? <StyledBsFillSunFill color = "white"/> : <StyledBsFillMoonFill color = "black"/>}
                 </ThemeWrapper>
-            </Header> */}
+            </Header>
             {isLoading ? 
                 <Loader>Loading ... </Loader>
                 : 

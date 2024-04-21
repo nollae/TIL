@@ -3,9 +3,9 @@ import { createGlobalStyle, ThemeProvider, styled} from 'styled-components';
 import Router from './Router';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { HelmetProvider } from 'react-helmet-async';
-import { theme, darkMode, lightMode } from './theme';
-import {BsFillSunFill, BsFillMoonFill} from 'react-icons/bs';
-import { useState } from 'react';
+import { darkTheme, lightTheme } from './theme';
+import { useRecoilValue } from 'recoil';
+import { modeAtom } from './atoms';
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -70,56 +70,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Header = styled.header`
-    height: 15vh;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const Title = styled.h1`
-    font-size: 48px;
-    color:${(props) => props.theme.accentColor};
-    margin-left: auto;
-    font-weight: bold;
-`;
-
-const ThemeWrapper = styled.div`
-    cursor: pointer;
-    width: 32px;
-    margin-right: auto;
-    padding-left: 25px;
-    margin-bottom: -1px;
-`;
-
-const StyledBsFillMoonFill = styled(BsFillMoonFill)`
-  width: 30px;
-  height: 30px;
-`;
-
-const StyledBsFillSunFill = styled(BsFillSunFill)`
-  width: 30px;
-  height: 30px;
-`;
-
 function App() {
-
-  const [mode, setMode] = useState(true);
-  const handleThemeMode = () => {
-    setMode((props) => !(props));
-  }
+  const mode = useRecoilValue(modeAtom);
 
   return ( 
-    <ThemeProvider theme={mode ? darkMode : lightMode}>
+    <ThemeProvider theme={mode ? darkTheme : lightTheme}>
       <GlobalStyle />
       <HelmetProvider>
-          <Header>
-              <Title>Top 100 Cyptos</Title>
-              <ThemeWrapper onClick={() => handleThemeMode()}>
-                {mode ? <StyledBsFillSunFill color = "white"/> : <StyledBsFillMoonFill color = "black"/>}
-            </ThemeWrapper>
-          </Header>
-        
         <Router />
       </HelmetProvider>
       <ReactQueryDevtools initialIsOpen={false} />

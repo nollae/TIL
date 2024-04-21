@@ -1,10 +1,11 @@
-import { useQueries, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { fetchCoinHistory } from '../api';
 import ApexChart from 'react-apexcharts';
-import { parse } from 'path';
 import styled from 'styled-components';
 import { MdOutlineCandlestickChart, MdOutlineShowChart } from "react-icons/md";
 import { useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { modeAtom } from '../atoms';
 
 const ChartButtons = styled.div`
   margin-left: 14px;
@@ -15,13 +16,14 @@ const ChartButtons = styled.div`
 
 const Button = styled.button<{$isActive:boolean}>`
   color: ${(props) => props.$isActive ? props.theme.bgColor : props.theme.focusColor};
-  border: 2px solid ${(props) => props.$isActive ? props.theme.accentColor : props.theme.focusColor};
+  border: none;
+  /* border: 2px solid ${(props) => props.$isActive ? props.theme.accentColor : props.theme.focusColor}; */
   border-radius: 0.4rem;
   background-color: ${(props) => props.$isActive ? props.theme.accentColor : props.theme.boxColor};
   padding: 8px;
   &:hover {
     background-color: ${(props) => props.theme.accentColor};
-    border: 2px solid ${(props) => props.theme.accentColor};
+    /* border: 2px solid ${(props) => props.theme.accentColor}; */
     color: ${(props) => props.theme.bgColor};
     cursor: pointer;
   }
@@ -45,6 +47,8 @@ interface IHistorical {
 
 function LineChart({data}:{data?: IHistorical[]}){
 
+    const mode = useRecoilValue(modeAtom);
+
     return (
         <ApexChart
             type="line"
@@ -56,7 +60,7 @@ function LineChart({data}:{data?: IHistorical[]}){
             ]}
             options={{
                 theme: {
-                    mode: "dark",
+                    mode: mode ? "dark" : "light" ,
                 },
                 chart: {
                     height: 300,
@@ -109,6 +113,9 @@ function LineChart({data}:{data?: IHistorical[]}){
 }
 
 function CandlestickChart({data}: {data?: IHistorical[]}){
+
+    const mode = useRecoilValue(modeAtom);
+
     return (
         <ApexChart 
             type="candlestick"
@@ -130,7 +137,7 @@ function CandlestickChart({data}: {data?: IHistorical[]}){
                 },
             ]}
             options={{
-                theme: {mode: "dark"},
+                theme: {mode: mode ? "dark" : "light"},
                 chart: {
                     height: 800,
                     width: 800,
@@ -183,7 +190,6 @@ function Chart({coinId}:CharProps){
         }
     );
     
-    const [chartData, setChartData] = useState<IHistorical[]>([]);
     const [chartType, setChartType] = useState("line");
 
     const handleChartType = (type:string) => {

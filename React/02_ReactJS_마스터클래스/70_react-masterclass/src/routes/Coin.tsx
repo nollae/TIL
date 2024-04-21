@@ -36,7 +36,7 @@ const Loader = styled.span`
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.theme.divColor};
   padding: 10px 20px;
   border-radius: 10px;
 `;
@@ -67,7 +67,7 @@ const Tab = styled.span<{$isActive: boolean}>`
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${(props) => props.theme.divColor};
   padding: 7px 0px;
   border-radius: 10px;
   color: ${(props) => 
@@ -156,11 +156,10 @@ interface PriceData {
     };
 }
 
-function onBackBtn(){
-    console.log('hi');
+interface ICoinProps {
 }
 
-function Coin() {
+function Coin({}:ICoinProps) {
 
     const {coinId} = useParams<RouterParams>();
     const {state} = useLocation<RouteState>();
