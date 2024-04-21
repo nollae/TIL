@@ -28,6 +28,12 @@ const Title = styled.h1`
     /* padding: 0 130px; */
 `;
 
+const SubTitle = styled.h1`
+    font-size: 30px;
+    color:${(props) => props.theme.accentColor};
+    margin-top: 25px;
+`;
+
 const Loader = styled.span`
     text-align: center;
     display: block;
@@ -225,6 +231,10 @@ function Coin({}:ICoinProps) {
                             <span>{tickersData?.max_supply}</span>
                             </OverviewItem>
                         </Overview>
+                        
+                        <SubTitle>
+                            The Details 👉
+                        </SubTitle>
 
                         <Tabs>
                             <Tab $isActive={chartMatch !== null}>
