@@ -99,7 +99,7 @@ function Coins({ }:ICoinsProps) {
     return (
         <Container>
             <Header>
-                <Title>Top 100 Cyptos</Title>
+                <Title>Cyptos Top 100</Title>
                 <ThemeWrapper onClick={handleModeAtom}>
                 {mode ? <StyledBsFillSunFill color = "white"/> : <StyledBsFillMoonFill color = "black"/>}
                 </ThemeWrapper>
