@@ -7,6 +7,7 @@ import { fetchCoinInfo, fetchCoinTickers } from '../api';
 import {Helmet} from 'react-helmet-async';
 
 import {ReactComponent as BackBtn} from '../assets/back-button.svg';
+import { useState, useEffect } from 'react';
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -183,6 +184,13 @@ function Coin({}:ICoinProps) {
 
     const loading = infoLoading || tickersLoading;
 
+    // const [activeTab, setActiveTab] = useState("chart");
+
+    // const handleActiveTab = () => {
+    //     console.log("CHK");
+    //     (activeTab === "chart") ? setActiveTab("price") : setActiveTab("chart");
+    // }
+
      return (
         <Container>
             <Helmet>
@@ -237,7 +245,7 @@ function Coin({}:ICoinProps) {
                         </SubTitle>
 
                         <Tabs>
-                            <Tab $isActive={chartMatch !== null}>
+                            <Tab $isActive={chartMatch !== null} >
                                 <Link to={`/${coinId}/chart`}>Chart</Link>
                             </Tab>
                             <Tab $isActive={priceMatch !== null}>
