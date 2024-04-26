@@ -393,3 +393,116 @@ motion.path 컴포넌트는 세 가지 강력한 SVG path 속성인 pathLength, 
 
 ## AnimatePresence
 
+AnimatePresence를 사용하면 React 트리에서 컴포넌트가 제거될 때 제거되는 컴포넌트에 애니메이션 효과를 줄 수 있다. React에는 다음과 같은 수명 주기 메서드가 없기 때문에 종료 애니메이션을 활성화해야 한다.
+
+### exit
+이 컴포넌트가 트리에서 제거될 때 애니메이션할 대상이다.
+
+```typescript
+import { motion, AnimatePresence } from "framer-motion"
+
+export const MyComponent = ({ isVisible }) => (
+< AnimatePresence>
+{isVisible && (
+initial={{ opacity: 0 }}
+animate={{ opacity: 1 }}
+exit={{ opacity: 0 }}
+/>
+)}
+< /AnimatePresence>
+)
+```
+
+🔗 https://www.framer.com/docs/animate-presence/
+
+## Slider part One
+
+## AnimatePresence
+AnimatePresence의 단일 자식 key를 변경하여 슬라이드쇼(슬라이더)와 같은 컴포넌트를 쉽게 만들 수 있다.
+
+```typescript 
+export const Slideshow = ({ image }) => (
+< AnimatePresence>
+key={image.src}
+src={image.src}
+initial={{ x: 300, opacity: 0 }}
+animate={{ x: 0, opacity: 1 }}
+exit={{ x: -300, opacity: 0 }}
+/>
+< /AnimatePresence>
+)
+```
+
+🔗 https://www.framer.com/docs/animate-presence/##unmount-animations
+
+🔗 Slider 예시 코드 : 
+https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed
+
+## Slider part Two
+
+### custom
+각 애니메이션 컴포넌트에 대해 동적 variants를 다르게 적용할 때 사용할 수 있는 사용자 지정 데이터이다.
+
+```typescript
+const variants = {
+visible: (custom) => ({
+opacity: 1,
+transition: { delay: custom * 0.2 }
+})
+}
+
+< motion.div custom={0} animate="visible" variants={variants} />
+< motion.div custom={1} animate="visible" variants={variants} />
+< motion.div custom={2} animate="visible" variants={variants} />
+```
+
+🔗 https://www.framer.com/docs/component/###custom
+
+### exitBeforeEnter
+
+true로 설정하면 AnimatePresence는 한 번에 하나의 컴포넌트만 랜더링한다. exiting중인 컴포넌트는 entering하는 컴포넌트가 렌더링되기 전에 exit 애니메이션을 완료한다.
+
+```typescript
+< AnimatePresence exitBeforeEnter>
+< motion.div key={currentItem} exit={{ opacity: 0 }} />
+< /AnimatePresence>
+```
+
+🔗 https://www.framer.com/docs/animate-presence/###exitbeforeenter<>
+
+## You Need to Watch This
+
+### Layout animation
+
+#### layout: boolean | "position" | "size"
+
+true인 경우 이 컴포넌트는 레이아웃이 변경될 때 새 위치에 자동으로 애니메이션을 적용한다. 크기나 위치가 변경될 때 모션 컴포넌트의 레이아웃에 자동으로 애니메이션을 적용하려면 레이아웃 prop을 제공한다. 부모 플렉스박스 방향, 너비, 상단/오른쪽 등 레이아웃 변경의 원인이 무엇이든 상관없이 애니메이션 자체는 최대 성능을 위해 변환으로 수행된다.
+
+```typescript
+< motion.div layout>< /motion.div>
+```
+
+### Syncing layout animations
+
+모션 컴포넌트의 layout prop은 레이아웃이 변할 때마다, 자동으로 애니메이션을 적용한다.
+
+🔗 https://www.framer.com/docs/animate-shared-layout/#syncing-layout-animations
+
+### Animate between components
+
+AnimateSharedLayout은 동일한 layoutId prop을 가진 모션 컴포넌트들 간에 애니메이션을 적용할 수 있다. layoutId가 있는 새 컴포넌트가 추가되고 다른 컴포넌트가 제거되면 이전 컴포넌트에서 새 컴포넌트로 레이아웃 애니메이션을 수행한다. 새 컴포넌트는 이전 컴포넌트의 애니메이션 값도 초기 상태로 상속한다. 따라서 시각적으로 하나의 연속 컴포넌트로 처리된다.
+
+```typescript
+isSelected && < motion.div layoutId="underline" />
+```
+
+🔗 https://www.framer.com/docs/animate-shared-layout/#animate-between-components
+
+## Final Project part One
+
+Layout 애니메이션 다양한 사용 예시들
+
+🔗 https://www.framer.com/docs/animate-shared-layout/#syncing-layout-animations
+
+## Final Project part Two
+
