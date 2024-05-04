@@ -3,6 +3,9 @@ import Home from './Routes/Home';
 import Tv from './Routes/Tv';
 import Search from './Routes/Search';
 import Header from './Components/Header';
+import Main from './Routes/Main';
+import Footer from './Components/Footer';
+import Login from './Routes/Login';
 
 function App() {
   return (
@@ -15,10 +18,17 @@ function App() {
         <Route path="/search">
           <Search />
         </Route>
-        <Route path={["/", "/movies/:movieId"]}>
+        <Route path={["/home", "/movies/:movieId"]}>
           <Home />
         </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/">
+          <Main />
+        </Route>
       </Switch>
+      <Footer />
     </Router>
   );
 }

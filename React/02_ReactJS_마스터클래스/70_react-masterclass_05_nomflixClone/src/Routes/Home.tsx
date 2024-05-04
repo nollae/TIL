@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { IGetMoviesResult, getMovies } from '../api';
-import { motion, AnimatePresence, useViewportScroll, useScroll } from 'framer-motion';
+import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import styled from 'styled-components';
 import { makeImagePath } from '../utils';
 import { useState } from 'react';
@@ -202,7 +202,7 @@ function Home(){
         history.push(`/movies/${movieId}`);
     }
 
-    const onOverlayClick = () => history.push("/");
+    const onOverlayClick = () => history.push("/home");
 
     const clickedMovie = 
         bigMovieMatch?.params.movieId && 
