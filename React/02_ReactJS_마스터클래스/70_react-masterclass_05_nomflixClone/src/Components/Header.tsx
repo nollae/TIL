@@ -2,7 +2,6 @@ import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 
 import HomeHeader from './HomeHeader';
 import MainHeader from './MainHeader';
-import LoginHeader from './LoginHeader';
 
 function Header() {
 
@@ -12,10 +11,12 @@ function Header() {
       exact: true,
     });
     const loginMatch = useRouteMatch("/login");
+    const signMatch = useRouteMatch("/signup");
     
     return (
       <>
-        { mainMatch ? <MainHeader /> : loginMatch ? <> </> : <HomeHeader /> }
+        { mainMatch ? <MainHeader /> : loginMatch ? <> </> : signMatch ? <> </> : <></>}
+        {/* <HomeHeader />  */}
       </>
     );
 }

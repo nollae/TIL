@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import {ReactComponent as MemberShip_SVG} from '../assets/member-ship.svg';
 import React, { useEffect, useState } from 'react';
 
+import { Link, useHistory } from 'react-router-dom';
+
 import { loginState } from '../atoms';
 import { useRecoilState } from 'recoil';
 
@@ -676,13 +678,18 @@ interface IForm {
 
 function Main() {
 
+    const history = useHistory();
+
     // useForm hook
     const { register, watch, handleSubmit, formState:{errors, isValid, isValidating}, getValues, setValue, trigger, setFocus} = useForm<IForm>();
     const [login, setLogin] = useRecoilState(loginState);
 
     const onValidTp = (data:IForm) => {
+        
         if(isValid){
-            setLogin((items)=> ({email: data.emailTp + "", password:items.password}))
+            setLogin((items)=> ({email: data.emailTp + "", password:items.password}));
+            history.push('/signup');
+
         }
     }
 
@@ -821,15 +828,15 @@ function Main() {
                                             </Email_Error_Container_Tp>
 
                                         </Email_Input_Container>
-                                        <Email_Button_Container>
-                                            시작하기
-                                            <Email_Button_Svg_Container>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="ChevronRightStandard" aria-hidden="true">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M15.5859 12L8.29303 19.2928L9.70725 20.7071L17.7072 12.7071C17.8948 12.5195 18.0001 12.2652 18.0001 12C18.0001 11.7347 17.8948 11.4804 17.7072 11.2928L9.70724 3.29285L8.29303 4.70706L15.5859 12Z" fill="currentColor">
-                                                    </path>
-                                                </svg>
-                                            </Email_Button_Svg_Container>
-                                        </Email_Button_Container>
+                                            <Email_Button_Container>
+                                                시작하기
+                                                <Email_Button_Svg_Container>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="ChevronRightStandard" aria-hidden="true">
+                                                        <path fillRule="evenodd" clipRule="evenodd" d="M15.5859 12L8.29303 19.2928L9.70725 20.7071L17.7072 12.7071C17.8948 12.5195 18.0001 12.2652 18.0001 12C18.0001 11.7347 17.8948 11.4804 17.7072 11.2928L9.70724 3.29285L8.29303 4.70706L15.5859 12Z" fill="currentColor">
+                                                        </path>
+                                                    </svg>
+                                                </Email_Button_Svg_Container>
+                                            </Email_Button_Container>
                                     </Email_Form_Container>
                                 </form>
                             </Email_Platform_Container>

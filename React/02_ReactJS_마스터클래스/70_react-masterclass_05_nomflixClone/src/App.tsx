@@ -6,8 +6,11 @@ import Header from './Components/Header';
 import Main from './Routes/Main';
 import Footer from './Components/Footer';
 import Login from './Routes/Login';
+import Sign from './Routes/SignUp';
+import Test from './Routes/Test';
 
 function App() {
+
   return (
     <Router>
       <Header />
@@ -18,11 +21,15 @@ function App() {
         <Route path="/search">
           <Search />
         </Route>
-        <Route path={["/home", "/movies/:movieId"]}>
-          <Home />
+        <Route path={["/home", "/movies/:movieId", "/home/series", "/home/movies", "/home/latest"]}>
+          {/* <Home /> */}
+          <Test />
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path={["/signup", "/signup/planform", "/signup/registration", "/signup/regform"]}>
+          <Sign />
         </Route>
         <Route path="/">
           <Main />

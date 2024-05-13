@@ -24,8 +24,36 @@ export interface IGetMoviesResult {
 
 }
 
+export interface IGetMovieVideos {
+    id: string,
+    results: {
+        name: string,
+        key: string,
+        site: string,
+        size: number,
+        type: string,
+        official: boolean,
+        published_at: string,
+        id: string,
+    }[]
+}
+
 export function getMovies(){
-    return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&region=${REGION}`)
+    return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&region=${REGION}&language=${LANGUAGE}`)
         .then((response) => response.json()
     );
 }
+
+export function getMoviesVideos(movieId?:number){
+    return fetch(`${BASE_PATH}/movie/${movieId}/videos?api_key=${API_KEY}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+
+
+export function getSeries(){
+    return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&region=${REGION}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+

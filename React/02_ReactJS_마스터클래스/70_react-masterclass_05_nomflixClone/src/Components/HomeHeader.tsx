@@ -184,7 +184,7 @@ function LoginHeader() {
               <Items>
                   <Item>
                       <Link to="/home">
-                          Home {homeMatch?.isExact && <Circle layoutId="circle"/>}
+                          홈 {homeMatch?.isExact && <Circle layoutId="circle"/>}
                       </Link>
                   </Item>
                   <Item>
@@ -223,6 +223,7 @@ function LoginHeader() {
                 </Search>
             </Col>
         </Nav>
+
     );
 }
 
