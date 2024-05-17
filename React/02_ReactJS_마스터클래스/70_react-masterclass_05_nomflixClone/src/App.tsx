@@ -15,24 +15,26 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/tv">
-          <Tv />
+        <Route exact path="/tv" component={Tv}>
+          {/* <Tv /> */}
         </Route>
-        <Route path="/search">
-          <Search />
+        <Route exact path="/search" component={Search}>
+          {/* <Search /> */}
         </Route>
-        <Route path={["/home", "/movies/:movieId", "/home/series", "/home/movies", "/home/latest"]}>
+        <Route exact component={Test}
+              path={["/home", "/movies/:movieId", "/home/series", "/home/movies", "/home/latest"]}>
           {/* <Home /> */}
-          <Test />
+          {/* <Test /> */}
         </Route>
-        <Route path="/login">
-          <Login />
+        <Route exact path="/login" component={Login}>
+          {/* <Login /> */}
         </Route>
-        <Route path={["/signup", "/signup/planform", "/signup/registration", "/signup/regform"]}>
-          <Sign />
+        <Route exact component={Sign}
+               path={["/signup", "/signup/planform", "/signup/registration", "/signup/regform"]}>
+          {/* <Sign /> */}
         </Route>
-        <Route path="/">
-          <Main />
+        <Route exact path="/" component={Main}>
+          {/* <Main /> */}
         </Route>
       </Switch>
       <Footer />
