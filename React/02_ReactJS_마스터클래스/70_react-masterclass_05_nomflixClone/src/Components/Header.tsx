@@ -1,7 +1,7 @@
 import { Link, useHistory, useRouteMatch } from 'react-router-dom'; 
 
-import HomeHeader from './HomeHeader';
-import MainHeader from './MainHeader';
+import HomeHeader from './HomeHeader_old';
+import MainHeader from './HomeHeader';
 
 function Header() {
 

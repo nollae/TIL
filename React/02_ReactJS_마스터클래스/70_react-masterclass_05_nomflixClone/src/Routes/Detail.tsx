@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { IGetMovieVideos, getMovieVideos,
     IGetMovieDetails, getMovieDetails,
     IGetMovieCredits, getMovieCredits,
-    IGetMoviesSimilar, getMoviesSimilar
+    IGetMoviesSimilar, getMoviesSimilar,
+    getSeriesVideos,
+    getSeriesDetails,
+    getSeriesCredits,
+    getSeriesSimilar
  } from '../api';
  
 import { makeVideoPath, convertToTime, makeImagePath } from '../utils';
@@ -14,7 +18,12 @@ import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom'; 
 
-import { userSelector, addFavoriteVideo, removeFavoriteVideo, userState, IUser, addVotedVideos, removeVotedVideos, changeMute} from '../atoms';
+import { userSelector, addFavoriteVideo, 
+        removeFavoriteVideo, userState, 
+        IUser, addVotedVideos, 
+        removeVotedVideos, changeMute,
+        addFavoriteVideoInfo, removeFavoriteVideoInfo
+    } from '../atoms';
 import { useRecoilState, useSetRecoilState,useRecoilValue } from "recoil";
 
 
@@ -1812,6 +1821,13 @@ interface IProps {
     isOpen:boolean,
     movieId?:number,
     title?:string,
+    to?:string,
+    from?:string,
+}
+
+interface IGenre {
+    id: number,
+    name: string,
 }
 
 
@@ -1821,32 +1837,32 @@ function Detail(props:IProps) {
     const [user, setUser] = useRecoilState<IUser | null>(userSelector);
 
     // video 데이터 가져오기
-    const { data, isLoading } = useQuery<IGetMovieVideos>(
-        ["movies", "videos"],
-        () => getMovieVideos(props.movieId)
-    );
+    const videoKey = props.from === "series" ? ["series", "videos"] : ["movies", "videos"];
+    const videoFn = props.from === "series" ? () => getSeriesVideos(props.movieId) : () => getMovieVideos(props.movieId);
+    
+    const { data, isLoading } = useQuery(videoKey, videoFn);
 
     const handlePlayerReady = () => {
         const iframe = document.querySelector(".react-player > div > iframe")  as HTMLIFrameElement | null;
     };
 
     // 영화 detail 데이터 가져오기
-    const { data: detail, isLoading: detailLoading } = useQuery<IGetMovieDetails>(
-        ["movie", "details"],
-        () => getMovieDetails(props.movieId)
-    );
+    const detailKey = props.from === "series" ? ["series", "details"] : ["movies", "details"];
+    const detailFn = props.from === "series" ? () => getSeriesDetails(props.movieId) : () => getMovieDetails(props.movieId);
     
+    const { data: detail, isLoading: detailLoading } = useQuery<IGetMovieDetails>(detailKey, detailFn);
+
     // 영화 credits 데이터 가져오기
-    const { data: credits, isLoading: creditsLoading } = useQuery<IGetMovieCredits>(
-        ["movie", "credits"],
-        () => getMovieCredits(props.movieId)
-    );
+    const credeitKey = props.from === "series" ? ["series", "credits"] : ["movies", "credits"];
+    const credeitFn = props.from === "series" ? () => getSeriesCredits(props.movieId) : () => getMovieCredits(props.movieId);
+
+    const { data: credits, isLoading: creditsLoading } = useQuery<IGetMovieCredits>(credeitKey, credeitFn);
 
     // 비슷한 콘텐츠 데이터 가져오기
-    const { data: similar, isLoading: similarsLoading } = useQuery<IGetMoviesSimilar>(
-        ["movies", "similar"],
-        () => getMoviesSimilar(props.movieId)
-    );
+    const similarKey = props.from === "series" ? ["series", "similar"] : ["movies", "similar"];
+    const similarFn = props.from === "series" ? () => getSeriesSimilar(props.movieId) : () => getMoviesSimilar(props.movieId);
+
+    const { data: similar, isLoading: similarsLoading } = useQuery<IGetMoviesSimilar>(similarKey, similarFn);
 
     // 비슷한 콘텐츠 더보기 버튼 이벤트
     const [isMore, setIsMore] = useState(false);
@@ -1855,7 +1871,6 @@ function Detail(props:IProps) {
     }
 
     // 영상 음소거 버튼 이벤트
-    console.log("hhhh", user?.muted);
     const [isMute, setIsMute] = useState(user !== null ? user.muted : false);
     const [mute, setMute] = useRecoilState(changeMute);
     const handleVideoMute = () => {
@@ -1871,21 +1886,43 @@ function Detail(props:IProps) {
     const handleModalClose = () => {
         setIsClose(!isClose);
         props.onModalClose(false);
-        history.push(`/home`);
+        if(props.to){
+            history.push(props.to);
+        }else{
+            history.push(`/home`);
+        }
     }
 
     // 관심있는 영화/TV 추가 이벤트
     const favList = user?.favoriteVideos;
     const [addFav, setAddFav] = useRecoilState(addFavoriteVideo);
     const [delFav, setDelFav] = useRecoilState(removeFavoriteVideo);
-    const handleFavVideo = (movieId?: number) => {
-        if (movieId !== undefined && movieId !== null){
+    const [addFavInfo, setAddFavInfo] = useRecoilState(addFavoriteVideoInfo);
+    const [delFavInfo, setDelFavInfo] = useRecoilState(removeFavoriteVideoInfo);
+    const handleFavVideo = (
+            movieId?: number, 
+            title?: string, 
+            backPath?: string,
+            postPath?: string,
+            name?: string,
+        ) => {
+            if (movieId !== undefined && movieId !== null){
+            const temp = {
+                id: movieId ,
+                title: (title === undefined) ? "" : title,
+                backdrop_path: (backPath === undefined) ? "" : backPath,
+                poster_path: (postPath === undefined) ? "" : postPath,
+                name: (name === undefined) ? "" :  name,
+            };
             if(favList?.includes(movieId)){
                 setDelFav(movieId);
+                setDelFavInfo(movieId);
             }else{
-                setAddFav(movieId);
+                setAddFav(movieId)
+                setAddFavInfo(temp);
             }
         }
+
     }
 
     // 좋아요 투표한 영화/TV 추가 이벤트
@@ -1973,7 +2010,7 @@ function Detail(props:IProps) {
                                         </Play_Button_Container>
                                     </Play_Button_Wrapper>
                                     {/* 관심 */}
-                                    <Wish_Button_Wrapper onClick={() => handleFavVideo(detail?.id)} key={"wish"} >
+                                    <Wish_Button_Wrapper onClick={() => handleFavVideo(detail?.id, detail?.title, detail?.backdrop_path, detail?.poster_path, detail?.name)} >
                                         <Wish_Button_Svg_Wrapper>
                                             <Wish_Button_Svg>
                                                 {/* not wish */}
@@ -1994,7 +2031,7 @@ function Detail(props:IProps) {
                                         </Wish_Button_Svg_Wrapper>
                                     </Wish_Button_Wrapper>
                                     {/* 좋아요 */}
-                                    <Wish_Button_Wrapper onClick={() => handleVotedVideo(detail?.id)}  key={"like"}>
+                                    <Wish_Button_Wrapper onClick={() => handleVotedVideo(detail?.id)} >
                                         <Wish_Button_Svg_Wrapper>
                                             <Wish_Button_Svg>
                                                 {/* not like */}
@@ -2055,7 +2092,7 @@ function Detail(props:IProps) {
                         </Modal_Close_Svg>
                     </Modal_Close_Wrapper>
                     {/* info */}
-                    <Info_Wrapper key={"info"}>
+                    <Info_Wrapper >
                         <Info_Container>
                             <Info_Track_Wrapper>
                                 <div>
@@ -2067,8 +2104,8 @@ function Detail(props:IProps) {
                                                     <div>
                                                         <Meta_Info>
                                                             <Meta_Data>
-                                                                <div>{detail?.release_date.split("-")[0]}</div>
-                                                                <div> | {convertToTime(detail?.runtime)}</div>
+                                                                <div>{detail?.release_date ? detail?.release_date.split("-")[0] : detail?.first_air_date.split("-")[0]}</div>
+                                                                <div> | {detail?.runtime ? convertToTime(detail?.runtime) : detail?.seasons.length + ` 개의 시즌` }</div>
                                                                 <span> {detail?.belongs_to_collection ? detail?.belongs_to_collection.name ? ` | ` + detail?.belongs_to_collection.name : "" : ""}</span>
                                                             </Meta_Data>
                                                         </Meta_Info>
@@ -2098,8 +2135,8 @@ function Detail(props:IProps) {
                                             <Info_Cast_Detail_Container>
                                                 <Cast_Label>출연: </Cast_Label>
                                                 {credits?.cast.map((item, index, arr) => (
-                                                    <span key={item.id + index}>
-                                                        <Cast_Item key={`cast_` + item.id + index}> 
+                                                    <span key={item.id + "_casts"}>
+                                                        <Cast_Item> 
                                                             {index <=2 ? item.name : null}
                                                             {index >= 2 ? null : ", "}
                                                         </Cast_Item>
@@ -2119,7 +2156,7 @@ function Detail(props:IProps) {
                                             <Info_Cast_Detail_Container>
                                                 <Cast_Label>장르: </Cast_Label>
                                                 {detail?.genres.map((item, index, arr) => (
-                                                    <Cast_Item key={item.id + index + 1}>
+                                                    <Cast_Item key={item.id + "_genres"}>
                                                         {item.name}
                                                         {index === arr.length - 1 ? null : ", "}
                                                     </Cast_Item>
@@ -2132,7 +2169,7 @@ function Detail(props:IProps) {
                         </Info_Container>
                     </Info_Wrapper>
                     {/* similar */}
-                    <Info_Wrapper key={"similar"} style={{marginTop:0}}>
+                    <Info_Wrapper style={{marginTop:0}}>
                         <Similar_Wrapper>
                             <Similar_Container>
                                 <Similar_Title>함께 시청된 콘텐츠</Similar_Title>
@@ -2140,76 +2177,74 @@ function Detail(props:IProps) {
                                     <Content_Container>
                                         {/* item */}
                                         {
-                                            similar?.results.map((item) => (
-                                                <>
-                                                {
-                                                    item.backdrop_path === null || item.overview === "" ? null 
-                                                    : 
-                                                    <Content_Item_Container>
-                                                        {/* image */}
-                                                        <Content_Image_Wrapper>
-                                                            <Content_Image>
-                                                                <img src={item.backdrop_path === null ? "" : makeImagePath(item.backdrop_path)} alt="" />
-                                                            </Content_Image>
-                                                            <Content_Play_Wrapper>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="PlayStandard" aria-hidden="true">
-                                                                    <path d="M5 2.69127C5 1.93067 5.81547 1.44851 6.48192 1.81506L23.4069 11.1238C24.0977 11.5037 24.0977 12.4963 23.4069 12.8762L6.48192 22.1849C5.81546 22.5515 5 22.0693 5 21.3087V2.69127Z" fill="currentColor">
-                                                                    </path>
-                                                                </svg>
-                                                            </Content_Play_Wrapper>
-                                                            {/* <Content_Time>1시간 47분</Content_Time> */}
-                                                        </Content_Image_Wrapper>
-                                                        {/* card */}
-                                                        <Content_Card_Container>
-                                                            <div>
-                                                                <Content_Card_Meta_Container>
-                                                                    <Content_Card_Right_Wrapper>
-                                                                        <div>
-                                                                            <Content_Card_Year style={{fontWeight: 500, fontSize: "18px"}}>{item.title}</Content_Card_Year>
-                                                                            <Content_Card_Year>{item.release_date.split("-")[0]}</Content_Card_Year>
-                                                                        </div>
-                                                                    </Content_Card_Right_Wrapper>
+                                            similar?.results.map((item, idx) => (
+                                                item.backdrop_path === null || item.overview === "" ? null 
+                                                : 
+                                                <Content_Item_Container key={idx}>
+                                                    {/* image */}
+                                                    <Content_Image_Wrapper>
+                                                        <Content_Image>
+                                                            <img src={item.backdrop_path === null ? "" : makeImagePath(item.backdrop_path)} alt="" />
+                                                        </Content_Image>
+                                                        <Content_Play_Wrapper>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="PlayStandard" aria-hidden="true">
+                                                                <path d="M5 2.69127C5 1.93067 5.81547 1.44851 6.48192 1.81506L23.4069 11.1238C24.0977 11.5037 24.0977 12.4963 23.4069 12.8762L6.48192 22.1849C5.81546 22.5515 5 22.0693 5 21.3087V2.69127Z" fill="currentColor">
+                                                                </path>
+                                                            </svg>
+                                                        </Content_Play_Wrapper>
+                                                        {/* <Content_Time>1시간 47분</Content_Time> */}
+                                                    </Content_Image_Wrapper>
+                                                    {/* card */}
+                                                    <Content_Card_Container>
+                                                        <div>
+                                                            <Content_Card_Meta_Container>
+                                                                <Content_Card_Right_Wrapper>
                                                                     <div>
-                                                                        <Content_Card_Left_Wrapper>
-                                                                            <Content_Card_Svg_Wrapper>
-                                                                                {/* 관심있는 콘텐츠 */}
-                                                                                <Content_Card_Button onClick={() => handleFavVideo(item?.id)}>
-                                                                                    <div>
-                                                                                        <Content_Svg>
-                                                                                            {/* not wish */}
-                                                                                            <svg 
-                                                                                                style={{display: item?.id !== undefined ? favList?.includes(item?.id) ? "none" : "" : ""}}
-                                                                                                xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="PlusStandard" aria-hidden="true">
-                                                                                                <path fillRule="evenodd" clipRule="evenodd" d="M11 11V2H13V11H22V13H13V22H11V13H2V11H11Z" fill="currentColor">
-                                                                                                </path>
-                                                                                            </svg>
-                                                                                            {/* wish */}
-                                                                                            <svg 
-                                                                                                style={{display: item?.id !== undefined ? favList?.includes(item?.id) ? "" : "none" : ""}}
-                                                                                                xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="CheckmarkStandard" aria-hidden="true">
-                                                                                                <path fillRule="evenodd" clipRule="evenodd" d="M21.2928 4.29285L22.7071 5.70706L8.70706 19.7071C8.51952 19.8946 8.26517 20 7.99995 20C7.73474 20 7.48038 19.8946 7.29285 19.7071L0.292847 12.7071L1.70706 11.2928L7.99995 17.5857L21.2928 4.29285Z" fill="currentColor">
-                                                                                                </path>
-                                                                                            </svg>
-                                                                                        </Content_Svg>
-                                                                                    </div>
-                                                                                </Content_Card_Button>
-                                                                            </Content_Card_Svg_Wrapper>
-                                                                        </Content_Card_Left_Wrapper>
+                                                                        <Content_Card_Year style={{fontWeight: 500, fontSize: "18px"}}>{item.title ? item.title : item.name}</Content_Card_Year>
+                                                                        <Content_Card_Year>{item.release_date ? 
+                                                                                                item.release_date.split("-")[0] : 
+                                                                                                item.first_air_date ? item.first_air_date.split("-")[0] : ""}</Content_Card_Year>
                                                                     </div>
-                                                                </Content_Card_Meta_Container>
-                                                                <Content_OverView_Wrapper>
-                                                                    <div>
-                                                                        <Content_OverView>
-                                                                            {item.overview}
-                                                                        </Content_OverView>
-                                                                    </div>
-                                                                </Content_OverView_Wrapper>
-                                                            </div>
-                                                        </Content_Card_Container>
-                                                    </Content_Item_Container>
+                                                                </Content_Card_Right_Wrapper>
+                                                                <div>
+                                                                    <Content_Card_Left_Wrapper>
+                                                                        <Content_Card_Svg_Wrapper>
+                                                                            {/* 관심있는 콘텐츠 */}
+                                                                            <Content_Card_Button onClick={() => handleFavVideo(item?.id, item?.title, item?.backdrop_path, "", item?.name)}>
+                                                                                <div>
+                                                                                    <Content_Svg>
+                                                                                        {/* not wish */}
+                                                                                        <svg 
+                                                                                            style={{display: item?.id !== undefined ? favList?.includes(item?.id) ? "none" : "" : ""}}
+                                                                                            xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="PlusStandard" aria-hidden="true">
+                                                                                            <path fillRule="evenodd" clipRule="evenodd" d="M11 11V2H13V11H22V13H13V22H11V13H2V11H11Z" fill="currentColor">
+                                                                                            </path>
+                                                                                        </svg>
+                                                                                        {/* wish */}
+                                                                                        <svg 
+                                                                                            style={{display: item?.id !== undefined ? favList?.includes(item?.id) ? "" : "none" : ""}}
+                                                                                            xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" role="img" data-icon="CheckmarkStandard" aria-hidden="true">
+                                                                                            <path fillRule="evenodd" clipRule="evenodd" d="M21.2928 4.29285L22.7071 5.70706L8.70706 19.7071C8.51952 19.8946 8.26517 20 7.99995 20C7.73474 20 7.48038 19.8946 7.29285 19.7071L0.292847 12.7071L1.70706 11.2928L7.99995 17.5857L21.2928 4.29285Z" fill="currentColor">
+                                                                                            </path>
+                                                                                        </svg>
+                                                                                    </Content_Svg>
+                                                                                </div>
+                                                                            </Content_Card_Button>
+                                                                        </Content_Card_Svg_Wrapper>
+                                                                    </Content_Card_Left_Wrapper>
+                                                                </div>
+                                                            </Content_Card_Meta_Container>
+                                                            <Content_OverView_Wrapper>
+                                                                <div>
+                                                                    <Content_OverView>
+                                                                        {item.overview}
+                                                                    </Content_OverView>
+                                                                </div>
+                                                            </Content_OverView_Wrapper>
+                                                        </div>
+                                                    </Content_Card_Container>
+                                                </Content_Item_Container>
 
-                                                }
-                                                </>
                                             ))
                                         }
                                     </Content_Container>
@@ -2241,54 +2276,77 @@ function Detail(props:IProps) {
                         </Similar_Wrapper>
                     </Info_Wrapper>
                     {/* Detail */}
-                    <Info_Wrapper key={"detail"} style={{marginTop:0}} id="about">
+                    <Info_Wrapper style={{marginTop:0}} id="about">
                         <Detail_Wrapper>
                             <div>
                                 {/* header */}
                                 <Detail_Header_Wrapper>
                                     <h3>
-                                        <strong>'{detail?.title}' </strong>
+                                        <strong>'{detail?.title ? detail?.title : detail?.name}' </strong>
                                         상세 정보
                                     </h3>
                                 </Detail_Header_Wrapper>
                                 {/* content */}
                                 <Detail_Content_Container>
                                     {/* item */}
+                                    {
+                                        props.from === "series"
+                                        ?
+                                        <div>
+                                            <Detail_Label>크리에이터: </Detail_Label>
+                                            {credits?.crew.map((item, index, arr) => (
+                                                <Detail_Content key={item.id + "_creator"}>
+                                                    {
+                                                        item.known_for_department === "Writing" ?
+                                                        item.name : null
+                                                    }
+                                                </Detail_Content>
+                                            ))}
+                                        </div>
+                                        :
+                                        <div>
+                                            <Detail_Label>감독: </Detail_Label>
+                                            {credits?.crew.map((item, index, arr) => (
+                                                <Detail_Content key={index + "_director"}>
+                                                    {
+                                                        item.job === "Director" ?
+                                                        item.name : null
+                                                    }
+                                                </Detail_Content>
+                                            ))}
+                                        </div>
+                                    }
+                                    
                                     <div>
-                                        <Detail_Label key={"director"}>감독: </Detail_Label>
-                                        {credits?.crew.map((item, index, arr) => (
-                                            <Detail_Content key={item.id + index + 100}>
-                                                {
-                                                    item.job === "Director" ?
-                                                    item.name : null
-                                                }
-                                            </Detail_Content>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <Detail_Label key={"cast"}>출연: </Detail_Label>
+                                        <Detail_Label>출연: </Detail_Label>
                                         {credits?.cast.map((item, index, arr) => (
-                                            <Detail_Content key={item.id + index + 1000}>
+                                            <Detail_Content key={item.id + "_cast"}>
                                                 {item.name}
                                                 {index === arr.length - 1 ? null : ", "}
                                             </Detail_Content>
                                         ))}
                                     </div>
+                                    {
+                                        props.from === "series"
+                                        ?
+                                        null 
+                                        :
+                                        <div>
+                                            <Detail_Label>각본: </Detail_Label>
+                                            {credits?.crew.map((item, index, arr) => (
+                                                <Detail_Content key={index + "_write"}>
+                                                    {
+                                                        item.job === "Writer" ?
+                                                        item.name : null
+                                                    }
+                                                </Detail_Content>
+                                            ))}
+                                        </div>
+                                    }
                                     <div>
-                                        <Detail_Label key={"write"}>각본: </Detail_Label>
-                                        {credits?.crew.map((item, index, arr) => (
-                                            <Detail_Content key={item.id + index + 10000}>
-                                                {
-                                                    item.job === "Writer" ?
-                                                    item.name : null
-                                                }
-                                            </Detail_Content>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <Detail_Label key={"genre"}>장르: </Detail_Label>
+                                        <Detail_Label>장르: </Detail_Label>
                                         {detail?.genres.map((item, index, arr) => (
-                                        <Detail_Content key={item.id + index + 111}>
+                                        <Detail_Content key={index + "_genre"}>
                                             {item.name}
                                             {index === arr.length - 1 ? null : ", "}
                                         </Detail_Content>

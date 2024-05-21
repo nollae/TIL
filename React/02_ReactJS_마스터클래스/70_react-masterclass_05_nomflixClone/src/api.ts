@@ -10,6 +10,7 @@ interface IMovie {
     title: string;
     overview: string;
     idx: number;
+    name:string,
 }
 
 export interface IGetMoviesResult {
@@ -64,6 +65,9 @@ export interface IGetMovieDetails {
     "title": string,
     "video": boolean,
     "vote_average": number,
+    "first_air_date": string,
+    "name": string,
+    "seasons": []
 }
 
 export interface IGetMovieCredits {
@@ -108,6 +112,10 @@ export interface IGetMoviesSimilar {
         "original_title": string,
         "overview": string,
         "title": string,
+        "original_name": string,
+        "name": string,
+        "first_air_date": string,
+
     }[]
 }
 
@@ -129,8 +137,20 @@ export function getMoviesTop(){
     );
 }
 
+export function getMoviesUpcoming(){
+    return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&region=${REGION}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+
 export function getMovieVideos(movieId?:number){
     return fetch(`${BASE_PATH}/movie/${movieId}/videos?api_key=${API_KEY}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+
+export function getSeriesVideos(seriesId?:number){
+    return fetch(`${BASE_PATH}/tv/${seriesId}/videos?api_key=${API_KEY}&language=${LANGUAGE}`)
         .then((response) => response.json()
     );
 }
@@ -141,14 +161,32 @@ export function getMovieDetails(movieId?:number){
     );
 }
 
+export function getSeriesDetails(seriesId?:number){
+    return fetch(`${BASE_PATH}/tv/${seriesId}?api_key=${API_KEY}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+
 export function getMovieCredits(movieId?:number){
     return fetch(`${BASE_PATH}/movie/${movieId}/credits?api_key=${API_KEY}&language=${LANGUAGE}`)
         .then((response) => response.json()
     );
 }
 
+export function getSeriesCredits(seriesId?:number){
+    return fetch(`${BASE_PATH}/tv/${seriesId}/credits?api_key=${API_KEY}&language=${LANGUAGE}`)
+        .then((response) => response.json()
+    );
+}
+
 export function getMoviesSimilar(movieId?:number){
     return fetch(`${BASE_PATH}/movie/${movieId}/similar?api_key=${API_KEY}&language=${LANGUAGE}&page=1`)
+        .then((response) => response.json()
+    );
+}
+
+export function getSeriesSimilar(seriesId?:number){
+    return fetch(`${BASE_PATH}/tv/${seriesId}/similar?api_key=${API_KEY}&language=${LANGUAGE}&page=1`)
         .then((response) => response.json()
     );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { signupState } from '../atoms';
+import { loginState, signupState } from '../atoms';
 import { useRecoilState } from 'recoil';
 
 import styled from 'styled-components';
@@ -1626,14 +1626,26 @@ function Sign() {
     }
 
     // 2단계 이메일 & 비밀번호
+    const [login, setLogin] = useRecoilState(loginState);
     const [signup, setSignup] = useRecoilState(signupState);
     const onValid = (data:IForm) => {
         
         if(isValid && isChecked){
             setSignup((items) => ({membership: type+""!, email: data.email!, password: data.password!}));
+            setLogin((items)=> ({email: data.email!, password:data.password!}));
             history.push('/home');
         }
     }
+
+    useEffect(() => {
+        // 이메일 Setting
+        if(login.email) {
+            setValue("email", login.email);
+            handleEmailFocus();
+            trigger();
+            setFocus("email");
+        }
+    }, []);
 
     // 이메일
     const [isCmFocusEamil, setIsCmFocusEamil] = useState(false);

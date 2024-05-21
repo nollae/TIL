@@ -1,5 +1,6 @@
-import { atom, selector  } from 'recoil';
+import { atom, selector, DefaultValue, useSetRecoilState  } from 'recoil';
 import { recoilPersist } from "recoil-persist";
+
 
 // 로그인
 export interface ILogin {
@@ -22,28 +23,61 @@ export interface IUser {
     votedVideos: number[],
 }
 
+// 찜한 리스트 정보
+export interface IFavVideos {
+    id: number,
+    title: string,
+    backdrop_path: string,
+    poster_path: string,
+    name: string,
+}
+
 const { persistAtom } = recoilPersist({
     key: "localStorage", //원하는 key 값 입력
     storage: localStorage,
 })
 
+// 로그인
 export const loginState = atom<ILogin>({
     key: "login",
     default: {email: "", password: ""},
     effects_UNSTABLE: [persistAtom]
 });
 
+// 회원가입
 export const signupState = atom<ISignup>({
     key: "signup",
     default: {membership: "", email: "", password: ""},
     effects_UNSTABLE: [persistAtom]
 });
 
+// 사용자 정보
 export const userState = atom<IUser| null>({
     key: "user",
     default: null,
     effects_UNSTABLE: [persistAtom]
 })
+
+// 관심 영상 리스트 
+export const favListState = atom<IFavVideos[]>({
+    key: "favList",
+    default:[],
+    effects_UNSTABLE: [persistAtom]
+})
+
+// 로그아웃
+export const useResetAllStates = () => {
+    const setLoginState = useSetRecoilState(loginState);
+    const setUserState = useSetRecoilState(userState);
+    const setFavListState = useSetRecoilState(favListState);
+
+    return () => {
+        setLoginState({ email: "", password: "" });
+        setUserState(null);
+        setFavListState([]);
+        localStorage.clear(); // localStorage 초기화
+    };
+};
 
 // 사용자가 로그인하고 로그인 정보가 갱신될 때 사용자 정보 업데이트
 export const userSelector = selector({
@@ -68,11 +102,13 @@ export const userSelector = selector({
 export const addFavoriteVideo = selector({
     key: "addFavoriteVideo",
     get: ({get}) => {
-        return 0;
+        return {};
     },
     set: ({ get, set }, newValue) => {
         if (typeof newValue === 'number') {
             const user = get(userState);
+            const favList = get(favListState);
+
             if (user !== null) {
                 const updatedVideos = [...user.favoriteVideos];
                 if (!updatedVideos.includes(newValue)) { // 중복된 값이 없을 때만 추가
@@ -84,6 +120,38 @@ export const addFavoriteVideo = selector({
                     set(userState, updatedUser as IUser | null);
                 }
             }
+        }
+    }
+});
+
+// 관심 있는 영상 정보를 추가하는 함수
+export const addFavoriteVideoInfo = selector({
+    key: "addFavoriteVideoInfo",
+    get: ({get}) => {
+        
+        return {
+            id: 0,
+            title: "",
+            backdrop_path: "",
+            poster_path: "",
+            name: "",
+        };
+    },
+    set: ({ get, set }, newValue) => {
+        if (!(newValue instanceof DefaultValue)) {
+            const favList = get(favListState);
+
+            const updatedVideos = [...favList];
+            let target = false;
+
+            updatedVideos.forEach((item, idx) => {
+                if(item.id === newValue.id) target = true;
+            })
+            
+            if(!target){
+                set(favListState, [newValue, ...favList]);
+            }
+
         }
     }
 });
@@ -104,6 +172,22 @@ export const removeFavoriteVideo = selector({
                 };
                 set(userState, updatedUser as IUser | null);
             }
+        }
+    }
+});
+
+// 관심 있는 영상 정보를 제거하는 함수
+export const removeFavoriteVideoInfo = selector({
+    key: "removeFavoriteVideoInfo",
+    get: ({get}) => {
+        return 0;
+    },
+    set: ({ get, set }, newValue) => {
+        if (typeof newValue === 'number') {
+            const favList = get(favListState);
+            const target = favList.filter((item) => item.id !== newValue)
+            const updatedInfo = [...target];
+            set(favListState, updatedInfo);
         }
     }
 });
