@@ -1,23 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, cnt, ret;
-string s;
-stack<int> stk;
+int n, x, ret;
+
 
 int main(){
-    cin >> n >> s;
-    stk.push(-1);
+    cin >> n;
+    vector<int> a(n);
     for(int i = 0; i < n; i++){
-        if(s[i] == '(') stk.push(i);
-        if(s[i] == ')'){
-            stk.pop();
-            if(!stk.empty()){
-                ret = max(ret, i - stk.top());
-            }else{
-                stk.push(i);
-            }
-        }
+        cin >> a[i];
     }
-    cout << ret;
+
+    cin >> x;
+
+    sort(a.begin(), a.end());
+
+    int l = 0, r = n - 1;
+
+    while(l < r){
+        if(a[l] + a[r] == x){
+            r--;
+            ret++;
+        }
+        else if( a[l] + a[r] > x) r--;
+        else if( a[l] + a[r] < x) l++;
+    }
+
+    cout << ret << "\n";
+
+    return 0;
+
 }
